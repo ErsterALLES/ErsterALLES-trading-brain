@@ -1,0 +1,1 @@
+# ErsterALLES-trading-brain
