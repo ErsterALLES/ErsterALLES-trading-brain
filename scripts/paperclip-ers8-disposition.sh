@@ -4,6 +4,9 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=paperclip-resolve-api-key.sh
+source "${ROOT}/scripts/paperclip-resolve-api-key.sh"
+paperclip_resolve_api_key "$ROOT" || true
 
 IDENTIFIER="${PAPERCLIP_ISSUE_IDENTIFIER:-ERS-8}"
 COMMENT_FILE="${1:-}"
@@ -71,7 +74,7 @@ emit_blocked_json() {
       disposition: "blocked",
       issue: $issue,
       unblockOwner: "board operator",
-      unblockAction: "Inject PAPERCLIP_API_KEY into cloud-agent secrets (agent home dir listed in secrets but not mounted). Then run ./scripts/paperclip-board-ers8.sh <agent-api-key> or re-wake CEO.",
+      unblockAction: "Inject PAPERCLIP_API_KEY (or PAPERCLIP_API_KEY_FILE pointing at a mounted key file). See config/paperclip-ceo-cloud-env.example. Then run ./scripts/paperclip-board-ers8.sh or re-wake CEO.",
       evidence: { localVerify: "pass", paperclipApiKey: false, agentHomeMount: $homeMount },
       runId: $run,
       agentId: $agent

@@ -4,3 +4,5 @@ __pycache__/
 .env
 .env.*
 .pc-env-debug.json
+.paperclip-api-key
+.secrets/

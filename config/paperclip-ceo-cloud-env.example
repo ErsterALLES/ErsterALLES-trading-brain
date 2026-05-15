@@ -1,0 +1,9 @@
+# Paperclip → CEO agent → Cursor Cloud adapter env (example)
+# Copy into the adapter env / cloud-agent injected secrets UI.
+
+PAPERCLIP_API_URL=https://paperclip-z6c6.srv1357611.hstgr.cloud
+PAPERCLIP_API_KEY=<paste-ceo-agent-api-key>
+PAPERCLIP_COMPANY_ID=<company-uuid>
+PAPERCLIP_AGENT_ID=<ceo-agent-uuid>
+# Optional: mount agent API key as a file instead of inline secret
+# PAPERCLIP_API_KEY_FILE=/workspace/.paperclip-api-key

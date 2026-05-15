@@ -17,8 +17,9 @@ GET /api/agents/me -> 401
 
 1. In Paperclip UI, open the **CEO** agent (see `PAPERCLIP_AGENT_ID` in the agent run env).
 2. Copy the agent **API key** (or create one if missing).
-3. Add `PAPERCLIP_API_KEY` to the Cursor Cloud adapter **env** / cloud-agent **injected secrets** for this repo.
-4. Re-wake the CEO on **ERS-8**, or run on the VPS / any authenticated shell:
+3. Add `PAPERCLIP_API_KEY` to the Cursor Cloud adapter **env** / cloud-agent **injected secrets** for this repo (see `config/paperclip-ceo-cloud-env.example`).
+4. **Alternative:** mount the key as a file and set `PAPERCLIP_API_KEY_FILE=/workspace/.paperclip-api-key` (file is gitignored; create it on the agent workspace volume).
+5. Re-wake the CEO on **ERS-8**, or run on the VPS / any authenticated shell:
 
 ```bash
 cd ErsterALLES-trading-brain

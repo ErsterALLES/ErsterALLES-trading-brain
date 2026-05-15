@@ -4,6 +4,9 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
+# shellcheck source=paperclip-resolve-api-key.sh
+source "${ROOT}/scripts/paperclip-resolve-api-key.sh"
+paperclip_resolve_api_key "$ROOT" || true
 
 missing=()
 for v in PAPERCLIP_API_URL PAPERCLIP_API_KEY PAPERCLIP_COMPANY_ID PAPERCLIP_RUN_ID; do
