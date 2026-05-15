@@ -1,5 +1,7 @@
 ---
 id: trading-foundation
+slug: trading-foundation
+key: ErsterALLES/ErsterALLES-trading-brain/trading-foundation
 name: Trading Foundation
 version: 1.0.0
 category: trading

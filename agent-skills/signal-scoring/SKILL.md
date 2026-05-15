@@ -1,5 +1,7 @@
 ---
 id: signal-scoring
+slug: signal-scoring
+key: ErsterALLES/ErsterALLES-trading-brain/signal-scoring
 name: Signal Scoring & Aggregation
 version: 1.0.0
 category: strategy
