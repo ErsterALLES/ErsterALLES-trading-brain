@@ -11,7 +11,7 @@ Missing env: PAPERCLIP_API_KEY
 GET /api/agents/me -> 401
 ```
 
-`CLOUD_AGENT_INJECTED_SECRET_NAMES` lists identity vars only (no API key).
+`CLOUD_AGENT_INJECTED_SECRET_NAMES` lists identity vars only (no API key). An agent-home path may appear in the secret list but that directory is often **not mounted** in the cloud workspace — do not rely on file-based keys there; inject `PAPERCLIP_API_KEY` explicitly.
 
 ## Fix (board operator)
 

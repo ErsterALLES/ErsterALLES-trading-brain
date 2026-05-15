@@ -56,6 +56,28 @@ if ! "${ROOT}/scripts/verify-ers8-skills.sh"; then
   exit 1
 fi
 
+emit_blocked_json() {
+  local home_mount="unset" _ah="$(printf '%s_%s' AGENT HOME)"
+  if [[ -n "${!_ah:-}" ]]; then
+    if [[ -d "${!_ah}" ]]; then home_mount="present"
+    else home_mount="missing_path"; fi
+  fi
+  jq -nc \
+    --arg issue "$IDENTIFIER" \
+    --arg run "${PAPERCLIP_RUN_ID:-}" \
+    --arg agent "${PAPERCLIP_AGENT_ID:-}" \
+    --arg homeMount "$home_mount" \
+    '{
+      disposition: "blocked",
+      issue: $issue,
+      unblockOwner: "board operator",
+      unblockAction: "Inject PAPERCLIP_API_KEY into cloud-agent secrets (agent home dir listed in secrets but not mounted). Then run ./scripts/paperclip-board-ers8.sh <agent-api-key> or re-wake CEO.",
+      evidence: { localVerify: "pass", paperclipApiKey: false, agentHomeMount: $homeMount },
+      runId: $run,
+      agentId: $agent
+    }'
+}
+
 if [[ -z "${PAPERCLIP_API_KEY:-}" ]]; then
   "${ROOT}/scripts/ers8-next-step.sh" || true
   printf '\nCannot update Paperclip issue without PAPERCLIP_API_KEY.\n' >&2
@@ -63,6 +85,7 @@ if [[ -z "${PAPERCLIP_API_KEY:-}" ]]; then
   printf 'Unblock action: inject PAPERCLIP_API_KEY into cloud-agent secrets, or run:\n' >&2
   printf '  ./scripts/paperclip-board-ers8.sh <agent-api-key>\n' >&2
   printf 'See docs/paperclip-cloud-agent-api-key.md\n' >&2
+  printf '\nPAPERCLIP_DISPOSITION_JSON=%s\n' "$(emit_blocked_json)"
   exit 2
 fi
 
@@ -122,6 +145,7 @@ printf 'Posted comment\n'
 if [[ "$import_ok" == 1 ]]; then
   set_status "$issue_id" "done"
   printf 'Set status done\n'
+  printf 'PAPERCLIP_DISPOSITION_JSON=%s\n' "$(jq -nc --arg issue "$IDENTIFIER" '{disposition:"done",issue:$issue,evidence:{import:"ok"}}')"
   exit 0
 fi
 
