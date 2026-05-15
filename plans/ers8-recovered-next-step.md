@@ -1,0 +1,55 @@
+# ERS-8 recovered next step
+
+**Recovered:** 2026-05-15 (ERS-9)  
+**Issue:** ERS-8 — install three Trading Brain foundation skills into Paperclip
+
+## What ERS-8 already delivered (repo)
+
+| Artifact | Purpose |
+|----------|---------|
+| `agent-skills/trading-foundation/SKILL.md` | Risk / portfolio governor |
+| `agent-skills/market-data/SKILL.md` | Polymarket + Hyperliquid collectors |
+| `agent-skills/signal-scoring/SKILL.md` | Signal ensemble scoring |
+| `skills/*` | Symlinks so project skill scans find the same files |
+| `scripts/verify-ers8-skills.sh` | Local preflight (structure + `slug`/`key` frontmatter) |
+| `scripts/install-ers8-paperclip-skills.sh` | Company library import + optional CEO agent sync |
+
+Local preflight passes when run from repo root:
+
+```bash
+./scripts/verify-ers8-skills.sh
+```
+
+## Recovered missing next step (operational)
+
+ERS-8 closed after repo prep but **without executing the Paperclip import**. The missing step is:
+
+1. Run `./scripts/ers8-next-step.sh` from a Paperclip agent runtime (or VPS shell) where these env vars are set:
+   - `PAPERCLIP_API_URL`
+   - `PAPERCLIP_API_KEY`
+   - `PAPERCLIP_COMPANY_ID`
+   - `PAPERCLIP_RUN_ID`
+   - Optional: `PAPERCLIP_AGENT_ID` (CEO) to sync skills onto the agent after import
+2. Confirm the company library lists all three skills (installer prints matching keys).
+3. Mark **ERS-8** `done` once import is verified on the board.
+
+Import sources (GitHub paths on `main`):
+
+- `ErsterALLES/ErsterALLES-trading-brain/trading-foundation`
+- `ErsterALLES/ErsterALLES-trading-brain/market-data`
+- `ErsterALLES/ErsterALLES-trading-brain/signal-scoring`
+
+## Success criteria
+
+- `./scripts/verify-ers8-skills.sh` exits 0
+- `./scripts/install-ers8-paperclip-skills.sh` completes without curl/jq errors
+- Company skills API shows the three `ErsterALLES/ErsterALLES-trading-brain/*` keys
+- CEO agent (if synced) can invoke the skills on the next trading task
+
+## Blocker note (cloud agent heartbeat)
+
+Cursor Cloud runs for this repo currently inject `PAPERCLIP_*` identity vars but **not** `PAPERCLIP_API_KEY`, so the import cannot be executed from an unauthenticated cloud heartbeat. Unblock by adding `PAPERCLIP_API_KEY` to cloud-agent injected secrets, or run the install script on the Paperclip host with a board API key.
+
+## After import (out of ERS-8 scope)
+
+Per `plans/paperclip-foundation-readiness-report.md`, next foundation skills to stage: `signal-ingestion`, `strategy-distillation-video`, `strategy-spec-authoring`, `risk-manager`, `execution-safety`.

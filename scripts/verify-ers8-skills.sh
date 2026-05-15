@@ -13,6 +13,8 @@ required=(
   skills/market-data
   skills/signal-scoring
   scripts/install-ers8-paperclip-skills.sh
+  scripts/ers8-next-step.sh
+  plans/ers8-recovered-next-step.md
 )
 
 for path in "${required[@]}"; do
