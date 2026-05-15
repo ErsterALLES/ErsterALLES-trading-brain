@@ -1,5 +1,7 @@
 ---
 id: market-data-collector
+slug: market-data
+key: ErsterALLES/ErsterALLES-trading-brain/market-data
 name: Market Data Collector
 version: 1.0.0
 category: data
