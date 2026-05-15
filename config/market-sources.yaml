@@ -1,0 +1,80 @@
+# Market Data Sources Configuration
+# APIs, Feeds, Credentials, Rate Limits
+
+market_data_sources:
+  
+  # Hyperliquid: Crypto Derivatives (Primary)
+  hyperliquid:
+    type: "exchange_api"
+    endpoint: "https://api.hyperliquid.xyz"
+    auth: "secret_ref:hyperliquid_api_key"
+    rate_limit_calls: 100
+    rate_limit_period_seconds: 1
+    data_types:
+      - perpetuals_ohlcv
+      - funding_rates
+      - orderbook
+      - trades
+  
+  # Polygon.io: Multi-asset OHLCV (Backup for classical markets)
+  polygon:
+    type: "data_api"
+    endpoint: "https://api.polygon.io"
+    auth: "secret_ref:polygon_api_key"
+    rate_limit_calls: 5
+    rate_limit_period_seconds: 1
+    data_types:
+      - forex_ohlcv
+      - stock_ohlcv
+      - crypto_ohlcv
+  
+  # Finnhub: Real-time financial data
+  finnhub:
+    type: "data_api"
+    endpoint: "wss://ws.finnhub.io"
+    auth: "secret_ref:finnhub_api_key"
+    rate_limit_calls: 30
+    rate_limit_period_seconds: 1
+    data_types:
+      - forex_ticks
+      - stock_ticks
+      - earnings_calendar
+  
+  # Polymarket: Prediction Market CLOB (for signal discovery)
+  polymarket:
+    type: "prediction_market"
+    endpoint: "https://gamma-api.polymarket.com"
+    auth: "none"  # Public API
+    use_case: "signal_source_only"
+    data_types:
+      - market_data
+      - orderbook
+      - trade_history
+  
+  # CoinGecko: Crypto Market Data (Backup)
+  coingecko:
+    type: "data_api"
+    endpoint: "https://api.coingecko.com/api/v3"
+    auth: "none"  # Free tier
+    rate_limit_calls: 10
+    rate_limit_period_seconds: 1
+    data_types:
+      - ohlcv
+      - market_cap
+      - supply_metrics
+
+storage:
+  backend: "postgres"  # postgres | timescaledb | influxdb
+  connection: "secret_ref:database_url"
+  retention_policy:
+    ohlcv_1m: "3_months"
+    ohlcv_1h: "1_year"
+    ohlcv_1d: "unlimited"
+    trades: "7_days"
+
+sync_frequency:
+  ohlcv_1m: "1_minute"
+  ohlcv_5m: "5_minutes"
+  ohlcv_1h: "hourly"
+  orderbook: "realtime"
+  trades: "realtime"

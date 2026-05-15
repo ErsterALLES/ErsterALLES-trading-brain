@@ -1,0 +1,67 @@
+# Trading Brain Configuration
+# Risk Management, Position Sizing, Market Parameters
+
+trading:
+  mode: "shadow"  # shadow | paper | live
+  base_currency: "USDC"
+  initial_capital: 231.84
+
+risk_management:
+  # Max portfolio heat (% of equity)
+  max_portfolio_heat: 5.0
+  
+  # Position sizing
+  max_position_size: 2.5  # % of equity
+  min_position_size: 0.5  # % of equity
+  
+  # Loss limits
+  daily_loss_limit: 3.0  # % of equity per day
+  weekly_loss_limit: 5.0
+  max_drawdown: 10.0
+  
+  # Stop loss / Take profit
+  default_stop_loss: 2.0  # %
+  default_take_profit: 5.0  # %
+
+markets:
+  # Primary: Hyperliquid (Crypto Derivatives)
+  hyperliquid:
+    enabled: true
+    paper_trading: true
+    leverage_limit: 1  # Start without leverage
+    
+  # Secondary: Polymarket (Prediction Market Signals)
+  polymarket:
+    enabled: true
+    use_case: "signal_source"  # Not for direct trading yet
+    
+  # Tertiary: MetaTrader 5 (Classical Markets)
+  metatrader5:
+    enabled: false  # Plan: Phase 2
+    instruments:
+      - EURUSD
+      - GBPUSD
+      - XAUUSD
+      - SPY
+
+signal_aggregation:
+  sources:
+    - youtube_strategy_distillation
+    - technical_indicators
+    - market_microstructure
+    - polymarket_sentiment
+  
+  scoring_method: "weighted_ensemble"
+  min_signal_strength: 0.6  # 0-1 scale
+  signal_confirmation_needed: true
+
+backtest:
+  engine: "vectorbt"
+  slippage_bps: 5  # 5 basis points
+  commission_bps: 2.5
+  start_date: "2023-01-01"
+  end_date: "2025-12-31"
+  
+logging:
+  level: "INFO"
+  file: "/var/log/trading-brain.log"
