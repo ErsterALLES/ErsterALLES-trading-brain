@@ -30,8 +30,9 @@ ERS-8 closed after repo prep but **without executing the Paperclip import**. The
    - `PAPERCLIP_COMPANY_ID`
    - `PAPERCLIP_RUN_ID`
    - Optional: `PAPERCLIP_AGENT_ID` (CEO) to sync skills onto the agent after import
+   - Optional: `PAPERCLIP_ISSUE_IDENTIFIER=ERS-8` (default) for disposition script
 2. Confirm the company library lists all three skills (installer prints matching keys).
-3. Mark **ERS-8** `done` once import is verified on the board.
+3. Disposition script posts a comment and sets **ERS-8** to `done` (or `blocked` if import fails).
 
 Import sources (GitHub paths on `main`):
 
