@@ -17,6 +17,7 @@ if ((${#missing[@]} > 0)); then
   if [[ -n "${CLOUD_AGENT_INJECTED_SECRET_NAMES:-}" ]]; then
     printf 'Injected secrets: %s\n' "$CLOUD_AGENT_INJECTED_SECRET_NAMES" >&2
   fi
+  printf 'ERS-8: run ./scripts/ers8-next-step.sh after PAPERCLIP_API_KEY is injected (see plans/ers8-recovered-next-step.md)\n' >&2
   exit 2
 fi
 

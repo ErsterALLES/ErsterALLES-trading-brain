@@ -48,7 +48,10 @@ Import sources (GitHub paths on `main`):
 
 ## Blocker note (cloud agent heartbeat)
 
-Cursor Cloud runs for this repo currently inject `PAPERCLIP_*` identity vars but **not** `PAPERCLIP_API_KEY`, so the import cannot be executed from an unauthenticated cloud heartbeat. Unblock by adding `PAPERCLIP_API_KEY` to cloud-agent injected secrets, or run the install script on the Paperclip host with a board API key.
+Cursor Cloud runs for this repo inject `PAPERCLIP_*` identity vars but **not** `PAPERCLIP_API_KEY` (verified 2026-05-15 CEO rotation heartbeat). `GET /api/agents/me` returns 401 without Bearer auth; `./scripts/ers8-next-step.sh` exits 2 after local verify passes.
+
+**Unblock owner:** board operator / Paperclip host admin.  
+**Unblock action:** add `PAPERCLIP_API_KEY` to `CLOUD_AGENT_INJECTED_SECRET_NAMES`, then re-wake CEO or run `./scripts/install-ers8-paperclip-skills.sh` on the VPS with the same env vars.
 
 ## After import (out of ERS-8 scope)
 

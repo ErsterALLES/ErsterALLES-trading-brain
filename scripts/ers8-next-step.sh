@@ -1,32 +1,34 @@
 #!/usr/bin/env bash
-# Recovered ERS-8 next step: verify repo layout, then import skills into Paperclip when credentialed.
+# ERS-8 handoff: local verify + optional Paperclip import.
+# CEO cloud heartbeats run this when credentialed; otherwise exit 2 with unblock guidance.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-printf 'ERS-8 recovered next step — phase 1: local verify\n'
+printf '== ERS-8 next step ==\n\n'
+
+printf '1) Local structure preflight\n'
 "${ROOT}/scripts/verify-ers8-skills.sh"
 
-if [[ -z "${PAPERCLIP_API_KEY:-}" ]]; then
-  cat >&2 <<'EOF'
+if [[ -n "${PAPERCLIP_API_KEY:-}" ]]; then
+  printf '\n2) Paperclip company import (API key present)\n'
+  "${ROOT}/scripts/install-ers8-paperclip-skills.sh"
+  printf '\nDisposition: ERS-8 repo + Paperclip import complete. Mark ERS-8 done.\n'
+  exit 0
+fi
 
-ERS-8 recovered next step — phase 2: Paperclip import (skipped)
+cat >&2 <<'EOF'
 
-PAPERCLIP_API_KEY is not set in this environment. The repo is ready; run this script again
-from a Paperclip runtime or host shell with:
+2) Paperclip import skipped (PAPERCLIP_API_KEY not set)
 
-  export PAPERCLIP_API_URL=...
-  export PAPERCLIP_API_KEY=...
-  export PAPERCLIP_COMPANY_ID=...
-  export PAPERCLIP_RUN_ID=...
+Repo deliverables are ready. Unblock import by injecting PAPERCLIP_API_KEY into the
+cloud-agent secret set, or run from an authenticated Paperclip/VPS shell:
 
-Optional: export PAPERCLIP_AGENT_ID to sync skills onto the CEO agent after import.
+  ./scripts/install-ers8-paperclip-skills.sh
 
 See plans/ers8-recovered-next-step.md for success criteria.
 EOF
-  exit 2
-fi
 
-printf '\nERS-8 recovered next step — phase 2: Paperclip import\n'
-exec "${ROOT}/scripts/install-ers8-paperclip-skills.sh"
+printf '\nDisposition: ERS-8 repo deliverables verified; Paperclip import blocked on API key.\n'
+exit 2
