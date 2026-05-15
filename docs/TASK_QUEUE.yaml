@@ -1,0 +1,81 @@
+---
+# Trading Brain Task Queue
+# Ordered by priority. DO NOT skip ahead — complete each task before moving to next.
+# After interruption, read RESUME_STATE.md, then continue from current task.
+
+tasks:
+  - id: T1
+    name: "Live Position Tracker"
+    file: "trading-engine/position_tracker.py"
+    status: "in_progress"
+    description: |
+      Read shadow_portfolio.json every cycle. Update unrealized PnL with current prices.
+      Check SL/TP. Close positions that hit limits. Log all actions.
+      Write to data/positions/live_positions.json.
+    blocked_by: null
+
+  - id: T2
+    name: "Performance Dashboard"
+    file: "reports/performance_dashboard.py"
+    status: "pending"
+    description: |
+      Read all closed trades from shadow_trades.json. Calculate:
+      - Win rate, Sharpe ratio, max drawdown, profit factor
+      - Equity curve, daily PnL chart
+      - Asset-level performance breakdown
+      Write JSON report to reports/daily_performance.json.
+    blocked_by: T1
+
+  - id: T3
+    name: "Telegram Reporter"
+    file: "trading-engine/telegram_reporter.py"
+    status: "pending"
+    description: |
+      After each trading cycle, read latest signals + portfolio.
+      Format concise Telegram message with:
+      - Active signals with emojis
+      - Open positions + unrealized PnL
+      - Daily stats (trades, win rate, capital)
+      Send via send_message tool to telegram channel.
+    blocked_by: T2
+
+  - id: T4
+    name: "Real Heatmap Scraper"
+    file: "trading-engine/heatmap_scraper.py"
+    status: "pending"
+    description: |
+      Use Playwright + Chrome to screenshot CoinGlass and TradingView heatmaps.
+      Extract liquidation cluster prices via vision analysis or DOM parsing.
+      Feed liquidation zones into signal_collector as additional confirmation.
+    blocked_by: null
+    note: "Can run in parallel with T1-T3"
+
+  - id: T5
+    name: "Video Analysis Pipeline"
+    file: "ingestion/video_analyzer.py"
+    status: "pending"
+    description: |
+      YouTube URL → yt-dlp download → frame extraction (every 30s) →
+      Whisper transcription → vision analysis of key frames →
+      strategy rule extraction → save to strategies/ folder.
+    blocked_by: null
+    note: "User priority — can start immediately"
+
+  - id: T6
+    name: "Live Trading Connector"
+    file: "trading-engine/live_connector.py"
+    status: "blocked"
+    description: |
+      Hyperliquid API key integration, wallet signing, order placement.
+      ONLY after 2+ weeks of shadow validation with positive PnL.
+    blocked_by: "Shadow validation period (2 weeks)"
+
+  - id: T7
+    name: "Paperclip Skill Import"
+    file: "scripts/verify-ers8-skills.sh"
+    status: "in_progress"
+    description: |
+      CEO agent is working on ERS-8. Monitor progress via browser.
+      If CEO stalls, retry manual import via Playwright UI automation.
+    blocked_by: "CEO completion"
+    assignee: "CEO"
