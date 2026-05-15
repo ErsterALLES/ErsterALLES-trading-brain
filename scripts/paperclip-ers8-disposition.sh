@@ -19,13 +19,22 @@ api() {
 }
 
 find_issue_id() {
-  local list
-  list="$(api GET "/api/companies/${PAPERCLIP_COMPANY_ID}/issues?assigneeAgentId=${PAPERCLIP_AGENT_ID}")"
-  jq -r --arg id "$IDENTIFIER" '
-    (if type == "array" then . elif .issues then .issues else [] end)
-    | map(select((.identifier // .key // "") == $id))
-    | .[0].id // empty
-  ' <<<"$list"
+  local list filtered
+  for query in \
+    "?assigneeAgentId=${PAPERCLIP_AGENT_ID}" \
+    ""; do
+    list="$(api GET "/api/companies/${PAPERCLIP_COMPANY_ID}/issues${query}")"
+    filtered="$(jq -r --arg id "$IDENTIFIER" '
+      (if type == "array" then . elif .issues then .issues else [] end)
+      | map(select((.identifier // .key // "") == $id))
+      | .[0].id // empty
+    ' <<<"$list")"
+    if [[ -n "$filtered" ]]; then
+      printf '%s' "$filtered"
+      return 0
+    fi
+  done
+  return 1
 }
 
 post_comment() {
@@ -50,7 +59,10 @@ fi
 if [[ -z "${PAPERCLIP_API_KEY:-}" ]]; then
   "${ROOT}/scripts/ers8-next-step.sh" || true
   printf '\nCannot update Paperclip issue without PAPERCLIP_API_KEY.\n' >&2
-  printf 'Unblock: inject PAPERCLIP_API_KEY into cloud-agent secrets; re-run %s\n' "$0" >&2
+  printf 'Unblock owner: board operator\n' >&2
+  printf 'Unblock action: inject PAPERCLIP_API_KEY into cloud-agent secrets, or run:\n' >&2
+  printf '  ./scripts/paperclip-board-ers8.sh <agent-api-key>\n' >&2
+  printf 'See docs/paperclip-cloud-agent-api-key.md\n' >&2
   exit 2
 fi
 
@@ -110,8 +122,9 @@ printf 'Posted comment\n'
 if [[ "$import_ok" == 1 ]]; then
   set_status "$issue_id" "done"
   printf 'Set status done\n'
-else
-  set_status "$issue_id" "blocked"
-  printf 'Set status blocked (import failed)\n'
-  exit 5
+  exit 0
 fi
+
+set_status "$issue_id" "blocked"
+printf 'Set status blocked (import failed)\n' >&2
+exit 5

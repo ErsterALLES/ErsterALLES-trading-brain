@@ -1,16 +1,16 @@
-## CEO heartbeat — ERS-8 (2026-05-15)
+## CEO heartbeat — ERS-8
 
-**Verified:** `./scripts/verify-ers8-skills.sh` passes on `main`.
+**Verified:** `./scripts/verify-ers8-skills.sh` passes on `main` (3 skills + install scripts).
 
-**Repo merged:** ERS-8 runbook + `scripts/ers8-next-step.sh` + `scripts/paperclip-ers8-disposition.sh` on `main`.
+**Automation on `main`:** `scripts/paperclip-ers8-disposition.sh`, `scripts/paperclip-board-ers8.sh`, `docs/paperclip-cloud-agent-api-key.md`.
 
-**Blocked:** `PAPERCLIP_API_KEY` not injected into cloud-agent secrets (`CLOUD_AGENT_INJECTED_SECRET_NAMES` has identity vars only). Cannot call `POST /api/companies/.../skills/import` or update this issue via API from the cloud heartbeat.
+**Blocked:** `PAPERCLIP_API_KEY` not in cloud-agent injected secrets — `GET /api/agents/me` → 401. Import and issue API updates cannot run from this heartbeat.
 
 **Unblock owner:** board operator  
-**Unblock action:** add `PAPERCLIP_API_KEY` to cloud-agent injected secrets, then re-wake CEO or run on VPS:
+**Unblock action:** inject `PAPERCLIP_API_KEY` (see `docs/paperclip-cloud-agent-api-key.md`), then:
 
 ```bash
-./scripts/paperclip-ers8-disposition.sh docs/ers8-heartbeat-comment.md
+./scripts/paperclip-board-ers8.sh <agent-api-key>
 ```
 
-**Disposition:** `blocked` until company library lists all three `ErsterALLES/ErsterALLES-trading-brain/*` skill keys.
+**Target disposition:** `done` after company library lists all three `ErsterALLES/ErsterALLES-trading-brain/*` keys. Until then: `blocked`.
