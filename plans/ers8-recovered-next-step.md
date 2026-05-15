@@ -52,7 +52,7 @@ Import sources (GitHub paths on `main`):
 Cursor Cloud runs for this repo inject `PAPERCLIP_*` identity vars but **not** `PAPERCLIP_API_KEY` (verified 2026-05-15 CEO rotation heartbeat). `GET /api/agents/me` returns 401 without Bearer auth; `./scripts/ers8-next-step.sh` exits 2 after local verify passes.
 
 **Unblock owner:** board operator / Paperclip host admin.  
-**Unblock action:** add `PAPERCLIP_API_KEY` to `CLOUD_AGENT_INJECTED_SECRET_NAMES`, then re-wake CEO or run `./scripts/paperclip-board-ers8.sh <agent-api-key>` (see `docs/paperclip-cloud-agent-api-key.md`).
+**Unblock action:** run GitHub Actions workflow `.github/workflows/paperclip-ers8-import.yml` (repo secrets), or add `PAPERCLIP_API_KEY` to cloud-agent secrets and re-wake CEO, or run `./scripts/paperclip-board-ers8.sh <agent-api-key>` (see `docs/paperclip-cloud-agent-api-key.md`).
 
 ## After import (out of ERS-8 scope)
 

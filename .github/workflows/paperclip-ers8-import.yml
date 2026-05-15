@@ -1,0 +1,44 @@
+# ERS-8: import Trading Brain foundation skills into Paperclip (manual dispatch).
+# Board: add repository secrets (Settings → Secrets → Actions):
+#   PAPERCLIP_API_KEY, PAPERCLIP_API_URL, PAPERCLIP_COMPANY_ID, PAPERCLIP_RUN_ID
+# Optional: PAPERCLIP_AGENT_ID (CEO), PAPERCLIP_ISSUE_IDENTIFIER (default ERS-8)
+name: Paperclip ERS-8 skill import
+
+on:
+  workflow_dispatch:
+    inputs:
+      mark_issue_done:
+        description: Post comment and set ERS-8 done after import
+        type: boolean
+        default: true
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq jq
+
+      - name: Verify repo skills layout
+        run: ./scripts/verify-ers8-skills.sh
+
+      - name: Import skills into Paperclip company library
+        env:
+          PAPERCLIP_API_URL: ${{ secrets.PAPERCLIP_API_URL }}
+          PAPERCLIP_API_KEY: ${{ secrets.PAPERCLIP_API_KEY }}
+          PAPERCLIP_COMPANY_ID: ${{ secrets.PAPERCLIP_COMPANY_ID }}
+          PAPERCLIP_RUN_ID: ${{ secrets.PAPERCLIP_RUN_ID }}
+          PAPERCLIP_AGENT_ID: ${{ secrets.PAPERCLIP_AGENT_ID }}
+        run: ./scripts/install-ers8-paperclip-skills.sh
+
+      - name: Disposition (comment + done on ERS-8)
+        if: inputs.mark_issue_done
+        env:
+          PAPERCLIP_API_URL: ${{ secrets.PAPERCLIP_API_URL }}
+          PAPERCLIP_API_KEY: ${{ secrets.PAPERCLIP_API_KEY }}
+          PAPERCLIP_COMPANY_ID: ${{ secrets.PAPERCLIP_COMPANY_ID }}
+          PAPERCLIP_RUN_ID: ${{ secrets.PAPERCLIP_RUN_ID }}
+          PAPERCLIP_AGENT_ID: ${{ secrets.PAPERCLIP_AGENT_ID }}
+        run: ./scripts/paperclip-ers8-disposition.sh docs/ers8-heartbeat-comment.md

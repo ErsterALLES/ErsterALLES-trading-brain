@@ -55,3 +55,9 @@ EXECUTE=1 ./scripts/paperclip-ers8-board-mark-blocked.sh
 ```
 
 Or complete import + close: `./scripts/paperclip-board-ers8.sh <agent-api-key>`.
+
+## GitHub Actions (no cloud-agent API key required)
+
+1. Add repository secrets: `PAPERCLIP_API_KEY`, `PAPERCLIP_API_URL`, `PAPERCLIP_COMPANY_ID`, `PAPERCLIP_RUN_ID` (optional: `PAPERCLIP_AGENT_ID`).
+2. Run workflow **Paperclip ERS-8 skill import** (Actions → workflow_dispatch).
+3. Workflow runs `install-ers8-paperclip-skills.sh` and optionally `paperclip-ers8-disposition.sh` to comment and mark **ERS-8** `done`.

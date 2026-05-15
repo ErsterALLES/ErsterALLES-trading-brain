@@ -7,10 +7,10 @@
 **Blocked:** `PAPERCLIP_API_KEY` not in cloud-agent injected secrets — `GET /api/agents/me` → 401. Import and issue API updates cannot run from this heartbeat.
 
 **Unblock owner:** board operator  
-**Unblock action:** inject `PAPERCLIP_API_KEY` (see `docs/paperclip-cloud-agent-api-key.md`), then:
+**Unblock actions** (see `docs/paperclip-cloud-agent-api-key.md`):
 
-```bash
-./scripts/paperclip-board-ers8.sh <agent-api-key>
-```
+1. **GitHub Actions:** add repo secrets, run workflow `Paperclip ERS-8 skill import`.
+2. **VPS / board shell:** `./scripts/paperclip-board-ers8.sh <agent-api-key>`
+3. **Cloud CEO:** inject `PAPERCLIP_API_KEY` into cloud-agent secrets and re-wake CEO.
 
 **Target disposition:** `done` after company library lists all three `ErsterALLES/ErsterALLES-trading-brain/*` keys. Until then: `blocked`.
