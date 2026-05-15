@@ -41,3 +41,17 @@ curl -sS -H "Authorization: Bearer $PAPERCLIP_API_KEY" \
 ```
 
 Expect HTTP 200 and agent JSON.
+
+## Mark ERS-8 blocked from board shell (without cloud CEO)
+
+If the cloud CEO cannot auth but you have an agent API key on the VPS:
+
+```bash
+export PAPERCLIP_API_URL=...
+export PAPERCLIP_COMPANY_ID=...
+export PAPERCLIP_RUN_ID=<any-valid-run-uuid>
+export PAPERCLIP_API_KEY=<ceo-agent-api-key>
+EXECUTE=1 ./scripts/paperclip-ers8-board-mark-blocked.sh
+```
+
+Or complete import + close: `./scripts/paperclip-board-ers8.sh <agent-api-key>`.

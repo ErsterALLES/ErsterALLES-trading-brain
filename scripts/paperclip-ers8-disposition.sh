@@ -88,6 +88,7 @@ if [[ -z "${PAPERCLIP_API_KEY:-}" ]]; then
   printf 'Unblock action: inject PAPERCLIP_API_KEY into cloud-agent secrets, or run:\n' >&2
   printf '  ./scripts/paperclip-board-ers8.sh <agent-api-key>\n' >&2
   printf 'See docs/paperclip-cloud-agent-api-key.md\n' >&2
+  printf 'Board: EXECUTE=1 ./scripts/paperclip-ers8-board-mark-blocked.sh (with agent API key) to set issue blocked + comment\n' >&2
   printf '\nPAPERCLIP_DISPOSITION_JSON=%s\n' "$(emit_blocked_json)"
   exit 2
 fi
