@@ -24,7 +24,7 @@ Local preflight passes when run from repo root:
 
 ERS-8 closed after repo prep but **without executing the Paperclip import**. The missing step is:
 
-1. Run `./scripts/ers8-next-step.sh` from a Paperclip agent runtime (or VPS shell) where these env vars are set:
+1. Run `./scripts/paperclip-ers8-disposition.sh` (or `./scripts/ers8-next-step.sh` for verify/import only) from a Paperclip agent runtime (or VPS shell) where these env vars are set:
    - `PAPERCLIP_API_URL`
    - `PAPERCLIP_API_KEY`
    - `PAPERCLIP_COMPANY_ID`
