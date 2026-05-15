@@ -7,18 +7,8 @@
 
 set -euo pipefail
 
-require_env() {
-  local name="$1"
-  if [[ -z "${!name:-}" ]]; then
-    printf 'Missing required env var: %s\n' "$name" >&2
-    exit 1
-  fi
-}
-
-require_env PAPERCLIP_API_URL
-require_env PAPERCLIP_API_KEY
-require_env PAPERCLIP_COMPANY_ID
-require_env PAPERCLIP_RUN_ID
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+"${ROOT}/scripts/paperclip-preflight.sh"
 
 API="${PAPERCLIP_API_URL%/}"
 COMPANY="${PAPERCLIP_COMPANY_ID}"
