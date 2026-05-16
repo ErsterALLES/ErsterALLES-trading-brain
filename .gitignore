@@ -6,3 +6,6 @@ __pycache__/
 .pc-env-debug.json
 .paperclip-api-key
 .secrets/
+CREDENTIALS_VAULT.md
+CREDENTIALS_VAULT.md
+.env

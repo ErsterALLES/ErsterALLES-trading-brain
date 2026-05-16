@@ -1,55 +1,61 @@
 ---
-id: market-data-collector
-slug: market-data
-key: ErsterALLES/ErsterALLES-trading-brain/market-data
-name: Market Data Collector
+name: market-data
+description: "Real-time market data collection for crypto assets via Hyperliquid API"
 version: 1.0.0
-category: data
-tags: [hyperliquid, polymarket, polygon, ohlcv, orderbook, api]
+author: Hermes Agent
+metadata:
+  hermes:
+    tags: [trading, market-data, hyperliquid, crypto]
+    model: opencode/deepseek-v4-flash-free
 ---
 
 # Market Data Collector
 
-Fetch and normalize market data from multiple sources.
+## Purpose
+Fetches OHLCV candles, funding rates, open interest, and order book data from Hyperliquid for signal generation.
 
-## When to use
-- Signal generation needs fresh data
-- Backtesting needs historical data
-- Portfolio tracking needs price updates
-- Strategy validation needs market context
-
-## Sources & Endpoints
-
-### Primary: Hyperliquid (Perps)
-```python
-BASE = "https://api.hyperliquid.xyz"
-POST /info {"type": "meta"}  # All perps metadata
-POST /info {"type": "candleSnapshot", "req": {"coin": "BTC", "interval": "5m", "startTime": 1234567890000, "endTime": 1234567990000}}
-POST /info {"type": "l2Book", "coin": "BTC"}  # Orderbook L2
-POST /info {"type": "recentTrades", "coin": "BTC"}
-POST /info {"type": "fundingHistory", "coin": "BTC", "startTime": 1234567890000}
+## API Endpoint
+```
+POST https://api.hyperliquid.xyz/info
+Content-Type: application/json
 ```
 
-### Secondary: Polymarket (Signals)
-```python
-BASE = "https://gamma-api.polymarket.com"
-GET /markets?active=true&closed=false&limit=100
-GET /markets/{id}/orderbook
-GET /markets/{id}/trades
-GET /markets/{id}/prices
+## Methods
+
+### Get Candles
+```json
+{"type": "candleSnapshot", "req": {"coin": "BTC", "startTime": 1700000000000, "endTime": 1700003600000, "interval": "5m"}}
 ```
 
-### Backup: Polygon.io
-```python
-GET /v2/aggs/ticker/{ticker}/range/1/day/{start}/{end}?apiKey={KEY}
+### Get All Mids
+```json
+{"type": "allMids"}
 ```
 
-## Normalization
-All sources return unified `MarketData` object with ohlcv, orderbook, funding_rate, open_interest.
+### Get Meta
+```json
+{"type": "meta"}
+```
 
-## Rate Limits
-- Hyperliquid: ~100 req/s
-- Polymarket: ~10 req/s
-- Polygon: 5 req/s (free tier)
+## Usage
+```bash
+python3 -c "
+import requests, json
+url = 'https://api.hyperliquid.xyz/info'
+res = requests.post(url, json={'type': 'candleSnapshot', 'req': {'coin': 'BTC', 'interval': '5m', 'startTime': 0, 'endTime': 9999999999999}})
+print(json.dumps(res.json()[-5:], indent=2))
+"
+```
 
-**Rule**: Always backoff on 429. Cache aggressively.
+## Output Format
+```json
+[
+  {"T": 1700000000000, "c": "42000.5", "h": "42100.0", "l": "41950.0", "o": "42050.0", "v": "15.3"},
+  ...
+]
+```
+
+## Performance Notes
+- No API key required for public data
+- Rate limit: ~20 req/sec
+- Cache results for 30s to avoid unnecessary calls
